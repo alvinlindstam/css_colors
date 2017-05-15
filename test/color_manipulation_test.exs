@@ -61,4 +61,22 @@ defmodule ColorManipulationTest do
     assert hsl(80, 0.5, 0) |> complement() == hsl(260, 0.5, 0)
     assert hsl(300, 0.5, 0) |> complement() == hsl(120, 0.5, 0)
   end
+
+  test "mix" do
+    assert rgb(100, 0, 0) == mix(rgb(0, 0, 0), rgb(200, 0, 0))
+    assert parse("purple") |> to_string == mix(parse("#f00"), parse("#00f")) |> to_string
+    assert parse("gray") |> to_string == mix(parse("#f00"), parse("#0ff")) |> to_string
+    assert parse("#809155") |> to_string == mix(parse("#f70"), parse("#0aa")) |> to_string
+    assert parse("#4000bf") |> to_string == mix(parse("#f00"), rgb(0, 0, 255), 0.25)  |> to_string
+    assert parse("rgba(64, 0, 191, 0.75)") |> to_string == mix(rgb(255, 0, 0, 0.5), parse("#00f")) |> to_string
+
+    assert parse("red") == mix(parse("#f00"), parse("#00f"), 1)
+    assert parse("blue") == mix(parse("#f00"), parse("#00f"), 0)
+    assert parse("rgba(255, 0, 0, 0.5)") == mix(parse("#f00"), transparentize(parse("#00f"), 1))
+    assert parse("rgba(0, 0, 255, 0.5)") == mix(transparentize(parse("#f00"), 1), parse("#00f"))
+    assert parse("red") == mix(parse("#f00"), transparentize(parse("#00f"), 1), 1)
+    assert parse("blue") == mix(transparentize(parse("#f00"), 1), parse("#00f"), 0)
+    assert parse("rgba(0, 0, 255, 0)") == mix(parse("#f00"), transparentize(parse("#00f"), 1), 0)
+    assert parse("rgba(255, 0, 0, 0)") == mix(transparentize(parse("#f00"), 1), parse("#00f"), 1)
+  end
 end

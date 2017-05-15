@@ -74,6 +74,28 @@ defmodule CssColors.Color do
   def lightness(color), do: get_attribute(color, :lightness)
   def alpha(color), do: get_attribute(color, :alpha)
 
+  # sass rgb functions
+
+  def mix(color1, color2, weight\\0.5) do
+    # Algorithm taken from the sass function.
+
+    p = weight
+    w = p * 2 - 1
+    a = color1.alpha - color2.alpha
+
+    w1 = ((if (w * a == -1), do: w, else: (w + a) / (1 + w * a)) + 1) / 2.0
+    w2 = 1 - w1
+
+    [r, g, b] =
+      [:red, :green, :blue]
+      |> Enum.map(fn(key)->
+          get_attribute(color1, key) * w1 + get_attribute(color2, key) * w2
+        end)
+
+    alpha = alpha(color1) * p + alpha(color2) * (1 - p)
+    rgb(r, g, b, alpha)
+  end
+
   def get_attribute(color, key) do
     color
     |> cast_color_by_attribute(key)
