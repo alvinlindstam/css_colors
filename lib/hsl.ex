@@ -15,10 +15,10 @@ defmodule CssColors.HSL do
 
   def hsl(hue, saturation, lightness, alpha\\1.0)  do
     %__MODULE__{
-      hue: normalize_hue(hue)/1,
-      saturation: saturation/1,
-      lightness: lightness/1,
-      alpha: alpha/1
+      hue: cast(hue, :hue),
+      saturation: cast(saturation, :saturation),
+      lightness: cast(lightness, :lightness),
+      alpha: cast(alpha, :alpha)
     }
   end
 
@@ -45,9 +45,14 @@ defmodule CssColors.HSL do
     end
   end
 
-  defp normalize_hue(hue) when hue < 0, do: normalize_hue(hue + 360)
-  defp normalize_hue(hue) when hue >= 360, do: normalize_hue(hue - 360)
-  defp normalize_hue(hue), do: hue
+  def cast(hue, :hue) when hue < 0, do: cast(hue + 360, :hue)
+  def cast(hue, :hue) when hue >= 360, do: cast(hue - 360, :hue)
+  def cast(hue, :hue), do: hue/1
+  def cast(value, field) when field in [:saturation, :lightness, :alpha] do
+    value/1
+    |> min(1.0)
+    |> max(0.0)
+  end
 end
 
 defimpl String.Chars, for: CssColors.HSL do

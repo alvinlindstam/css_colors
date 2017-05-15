@@ -22,6 +22,49 @@ defmodule CssColors.Color do
     hsl(h, s, l, alpha)
   end
 
+  # Sass hsl functions
+  def opacify(color, amount) do
+    adjust(color, amount, :alpha, &+/2)
+  end
+
+  def transparentize(color, amount) do
+    adjust(color, amount, :alpha, &-/2)
+  end
+  
+  def lighten(color, amount) do
+    adjust(color, amount, :lightness, &+/2)
+  end
+
+  def darken(color, amount) do
+    adjust(color, amount, :lightness, &-/2)
+  end
+
+  def saturate(color, amount) do
+    # Support the filter effects definition of saturate.
+    # https://dvcs.w3.org/hg/FXTF/raw-file/tip/filters/index.html
+    #return identifier("saturate(#{color})") if amount.nil?
+    adjust(color, amount, :saturation, &+/2)
+  end
+
+  def desaturate(color, amount) do
+    adjust(color, amount, :saturation, &-/2)
+  end
+
+  def adjust_hue(color, degrees) do
+    adjust(color, degrees, :hue, &+/2)
+  end
+
+  def grayscale(color) do
+    # if color.is_a?(Sass::Script::Value::Number)
+    #   return identifier("grayscale(#{color})")
+    # end
+    desaturate color, 1
+  end
+
+  def complement(color) do
+    adjust_hue color, 180
+  end
+
   # Getter functions
   def red(color), do: get_attribute(color, :red)
   def green(color), do: get_attribute(color, :green)
@@ -35,6 +78,16 @@ defmodule CssColors.Color do
     color
     |> cast_color_by_attribute(key)
     |> Map.fetch!(key)
+  end
+
+  def adjust(struct, amount, field, operator) do
+    struct = cast_color_by_attribute(struct, field)
+    new_value =
+      struct
+      |> Map.fetch!(field)
+      |> operator.(amount)
+      |> struct.__struct__.cast(field)
+    Map.put(struct, field, new_value)
   end
 
   defp cast_color_by_attribute(color, :alpha), do: color

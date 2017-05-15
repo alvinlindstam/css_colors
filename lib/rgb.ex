@@ -12,10 +12,10 @@ defmodule CssColors.RGB do
     end
     def rgb(red, green, blue, alpha)  do
       %__MODULE__{
-        red: red/1,
-        green: green/1,
-        blue: blue/1,
-        alpha: alpha/1
+        red: cast(red, :red),
+        green: cast(green, :green),
+        blue: cast(blue, :blue),
+        alpha: cast(alpha, :alpha)
       }
     end
 
@@ -29,11 +29,22 @@ defmodule CssColors.RGB do
       to_string(struct, type)
     end
 
-    def to_string(%__MODULE__{red: r, green: g, blue: b, alpha: 1.0}, :rgba) do
-      "rgba(#{round(r)}, #{round(g)}, #{round(b)})"
+    def to_string(%__MODULE__{red: r, green: g, blue: b, alpha: alpha}, :rgba) do
+      "rgba(#{round(r)}, #{round(g)}, #{round(b)}, #{alpha})"
     end
     def to_string(%__MODULE__{red: r, green: g, blue: b, alpha: 1.0}, :hex) do
       "#" <> to_hex(r) <> to_hex(g) <> to_hex(b)
+    end
+
+    def cast(value, field) when field in [:red, :green, :blue] do
+      value/1
+      |> min(255.0)
+      |> max(0.0)
+    end
+    def cast(value, :alpha) do
+      value/1
+      |> min(1.0)
+      |> max(0.0)
     end
 
     defp to_hex(value) when is_float(value), do:
