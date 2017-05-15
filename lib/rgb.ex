@@ -42,6 +42,37 @@ defmodule CssColors.RGB do
       "0" <> Integer.to_string(value, 16)
     defp to_hex(value) when is_integer(value), do:
       Integer.to_string(value, 16)
+
+    def to_hsl(%__MODULE__{red: r, green: g, blue: b}) do
+        r = r/255
+        g = g/255
+        b = b/255
+
+        colors = [r, g, b]
+        max_color = Enum.max colors
+        min_color = Enum.min colors
+
+        h = s = l = (max_color + min_color) / 2;
+
+        if max_color == min_color do
+          {0.0, 0.0, l}
+        else
+          color_diff = max_color - min_color
+          s = if l > 0.5,
+            do: color_diff / (2 - max_color - min_color),
+            else: color_diff / (max_color + min_color)
+
+          h = case max_color do
+            ^r when g < b ->  (g - b) / color_diff + 6
+            ^r ->             (g - b) / color_diff
+            ^g ->             (b - r) / color_diff + 2
+            ^b ->             (r - g) / color_diff + 4
+          end
+
+          h = h / 6
+          {h * 360, s, l}
+        end
+    end
 end
 
 defimpl String.Chars, for: CssColors.RGB do

@@ -54,6 +54,12 @@ defmodule CssParseTest do
     rgb = parse(rgb_str)
     # Compare strings in order to ignore fractions
     assert to_string(rgb) == hsl |> rgb |> to_string
+    expected_hsl_string = case hsl.lightness do
+      1.0 -> "hsl(0, 0%, 100%)"
+      0.0 -> "hsl(0, 0%, 0%)"
+      _ -> to_string(hsl)
+    end
+    assert expected_hsl_string == rgb |> hsl |> to_string
   end do
     # taken from https://raw.githubusercontent.com/sass/sass/7716e67f3507c6f65878c69aa49ec358ebf675c7/test/sass/data/hsl-rgb.txt
     [

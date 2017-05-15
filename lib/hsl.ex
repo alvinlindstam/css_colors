@@ -6,6 +6,13 @@ defmodule CssColors.HSL do
     alpha:      1.0  # 0-1 (percent)
   ]
 
+  def to_string(%__MODULE__{hue: h, saturation: s, lightness: l, alpha: 1.0}) do
+    "hsl(#{round(h)}, #{round(s*100)}%, #{round(l*100)}%)"
+  end
+  def to_string(%__MODULE__{hue: h, saturation: s, lightness: l, alpha: a}) do
+    "hsla(#{round(h)}, #{round(s*100)}%, #{round(l*100)}%, #{a})"
+  end
+
   def hsl(hue, saturation, lightness, alpha\\1.0)  do
     %__MODULE__{
       hue: normalize_hue(hue)/1,
@@ -43,5 +50,10 @@ defmodule CssColors.HSL do
   defp normalize_hue(hue), do: hue
 end
 
+defimpl String.Chars, for: CssColors.HSL do
+  def to_string(struct) do
+    CssColors.HSL.to_string(struct)
+  end
+end
 
 
