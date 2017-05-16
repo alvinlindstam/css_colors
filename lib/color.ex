@@ -30,6 +30,30 @@ defmodule CssColors.Color do
   @rgb_fields [:red, :green, :blue, :alpha]
   @hsl_fields [:hue, :saturation, :lightness, :alpha]
 
+  @typedoc """
+    A representation of a color in hue, saturation, lightness and alpha.
+  """
+  @type hsl_color :: %HSL{
+    hue: :float,
+    saturation: :float,
+    lightness: :float,
+    alpha: :float,
+  }
+
+  @typedoc """
+    A representation of a color in red, green, blue and alpha.
+  """
+  @type rgb_color :: %RGB{
+      red: :float,
+      green: :float,
+      blue: :float,
+      alpha: :float
+    }
+
+  @typedoc """
+    A representation of a color in any supported system.
+  """
+  @type color :: hsl_color | rgb_color
   def rgb(color=%RGB{}) do
     color
   end
@@ -54,6 +78,7 @@ defmodule CssColors.Color do
 
   See also `transparentize/1` for the opposite effect.
   """
+  @spec opacify(color, number) :: hsl_color
   def opacify(color, amount) do
     adjust(color, amount, :alpha, &+/2)
   end
@@ -65,6 +90,7 @@ defmodule CssColors.Color do
 
   See also `opacify/1` for the opposite effect.
   """
+  @spec transparentize(color, number) :: color
   def transparentize(color, amount) do
     adjust(color, amount, :alpha, &-/2)
   end
@@ -76,6 +102,7 @@ defmodule CssColors.Color do
 
     See also `darken/1` for the opposite effect.
   """
+  @spec lighten(color, number) :: hsl_color
   def lighten(color, amount) do
     adjust(color, amount, :lightness, &+/2)
   end
@@ -87,6 +114,7 @@ defmodule CssColors.Color do
 
     See also `lighten/1` for the opposite effect.
   """
+  @spec darken(color, number) :: hsl_color
   def darken(color, amount) do
     adjust(color, amount, :lightness, &-/2)
   end
@@ -98,6 +126,7 @@ defmodule CssColors.Color do
 
     See also `desaturate/1` for the opposite effect.
   """
+  @spec saturate(color, number) :: hsl_color
   def saturate(color, amount) do
     # Support the filter effects definition of saturate.
     # https://dvcs.w3.org/hg/FXTF/raw-file/tip/filters/index.html
@@ -112,6 +141,7 @@ defmodule CssColors.Color do
 
     See also `saturate/1` for the opposite effect.
   """
+  @spec desaturate(color, number) :: hsl_color
   def desaturate(color, amount) do
     adjust(color, amount, :saturation, &-/2)
   end
@@ -122,6 +152,7 @@ defmodule CssColors.Color do
     Takes a color and a number of degrees (usually between -360 and 360), and returns a color with the hue rotated
     along the color wheel by that amount.
   """
+  @spec adjust_hue(color, number) :: hsl_color
   def adjust_hue(color, degrees) do
     adjust(color, degrees, :hue, &+/2)
   end
@@ -131,6 +162,7 @@ defmodule CssColors.Color do
 
     This is identical to `desaturate(color, 1)`.
   """
+  @spec grayscale(color) :: hsl_color
   def grayscale(color) do
     # if color.is_a?(Sass::Script::Value::Number)
     #   return identifier("grayscale(#{color})")
@@ -138,6 +170,12 @@ defmodule CssColors.Color do
     desaturate color, 1
   end
 
+  @doc """
+    Returns the complement of a color.
+
+    This is identical to `adjust_hue(color, 180)`.
+  """
+  @spec complement(color) :: hsl_color
   def complement(color) do
     adjust_hue color, 180
   end
@@ -146,35 +184,43 @@ defmodule CssColors.Color do
   @doc """
     Gets the `:red` property of the color.
   """
+  @spec get_red(color) :: float
   def get_red(color), do: get_attribute(color, :red)
   @doc """
     Gets the `:green` property of the color.
   """
+  @spec get_green(color) :: float
   def get_green(color), do: get_attribute(color, :green)
   @doc """
     Gets the `:blue` property of the color.
   """
+  @spec get_blue(color) :: float
   def get_blue(color), do: get_attribute(color, :blue)
   @doc """
     Gets the `:hue` property of the color.
   """
+  @spec get_hue(color) :: float
   def get_hue(color), do: get_attribute(color, :hue)
   @doc """
     Gets the `:saturation` property of the color.
   """
+  @spec get_saturation(color) :: float
   def get_saturation(color), do: get_attribute(color, :saturation)
   @doc """
     Gets the `:lightness` property of the color.
   """
+  @spec get_lightness(color) :: float
   def get_lightness(color), do: get_attribute(color, :lightness)
   @doc """
     Gets the `:alpha` property of the color.
   """
+  @spec get_alpha(color) :: float
   def get_alpha(color), do: get_attribute(color, :alpha)
 
   @doc """
     Get's any color attribute from the color.
   """
+  @spec get_attribute(color, atom) :: float
   def get_attribute(color, key) do
     color
     |> cast_color_by_attribute(key)
@@ -182,12 +228,13 @@ defmodule CssColors.Color do
   end
 
   # sass rgb functions
-
+  @spec invert(color) :: rgb_color
   def invert(color) do
     rgb_color = rgb(color)
     rgb(255 - rgb_color.red, 255 - rgb_color.green, 255 - rgb_color.blue, color.alpha)
   end
 
+  @spec mix(color, color, number) :: rgb_color
   def mix(color1, color2, weight\\0.5) do
     # Algorithm taken from the sass function.
 
@@ -237,6 +284,7 @@ defmodule CssColors.Color do
       %CssColors.RGB{alpha: 1.0, blue: 150.0, green: 150.0, red: 75.0}
 
   """
+  @spec adjust(color, number, atom,  (float, number -> number)) :: color
   def adjust(struct, amount, field, value_function) do
     struct = cast_color_by_attribute(struct, field)
     new_value =
