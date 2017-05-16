@@ -228,12 +228,37 @@ defmodule CssColors.Color do
   end
 
   # sass rgb functions
+  @doc """
+    Returns the inverse (negative) of a color.
+
+    The red, green, and blue values are inverted, while the opacity is left alone.
+  """
   @spec invert(color) :: rgb_color
   def invert(color) do
     rgb_color = rgb(color)
     rgb(255 - rgb_color.red, 255 - rgb_color.green, 255 - rgb_color.blue, color.alpha)
   end
 
+  @doc """
+    Mixes two colors together.
+
+    Specifically, takes the average of each of the RGB components, optionally weighted by the given percentage.
+    The opacity of the colors is also considered when weighting the components.
+
+    The weight specifies the amount of the first color that should be included in the returned color. The default, 0.5,
+    means that half the first color and half the second color should be used. 25% means that a quarter of the first
+    color and three quarters of the second color should be used.
+
+    ## Examples:
+
+        iex> to_string mix(parse("#00f"), parse("#f00"))
+        "#800080"
+        iex> to_string mix(parse("#00f"), parse("#f00"), 0.25)
+        "#BF0040"
+        iex> to_string mix(rgb(255, 0, 0, 0.5), parse("#00f"))
+        "rgba(64, 0, 191, 0.75)"
+  """
+  # todo: this is different from the sass examples since we round up. What's the right way?
   @spec mix(color, color, number) :: rgb_color
   def mix(color1, color2, weight\\0.5) do
     # Algorithm taken from the sass function.
