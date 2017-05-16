@@ -1,7 +1,6 @@
 defmodule CssParseTest do
   use ExUnit.Case, async: true
   use ExUnit.Parameterized
-  doctest CssColors
 
   import CssColors
   alias CssColors.{RGB, HSL}
