@@ -2,8 +2,31 @@ defmodule CssColors do
   @moduledoc """
   This module contains functions for creating and manipulating colors.
 
-  Colors are represented as either `CSSColors.RGB` or `CSSColors.HSL` structs. Any function in this
-  module can handle both representations, trasforming it to the necessary representation as necessary.
+  ## Color representations
+  Colors are represented as with either the RGB or HSL color models. Any function in this
+  module can handle both representations, transforming it to the necessary representation as necessary.
+
+  All colors contain opacity data.
+
+  ## Parsing and printing
+  It can parse strings with any valid css color (hex, rgb, rgba, hsl, hsla and named colors).
+
+  Any color can be converted to a valid css string. Using `to_string/1` will always return a string representation
+  of the color using it's current color model. You can transform it to the desired color model before stringifying
+  it if desired.
+
+      iex> color = parse("#fe3")
+      %CssColors.RGB{alpha: 1.0, blue: 51.0, green: 238.0, red: 255.0}
+      iex> to_string color
+      "#FFEE33"
+      iex> to_string hsl(color)
+      "hsl(55, 100%, 60%)"
+
+  ## Transformations
+  You can transform any attribute of the color.
+
+  Many common operations such as `darken/2` are provided as helper functions. See also `adjust/4` for the general
+  function.
 
   ## Examples:
 
