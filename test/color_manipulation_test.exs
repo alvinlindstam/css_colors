@@ -3,7 +3,7 @@ defmodule ColorManipulationTest do
   use ExUnit.Parameterized
   doctest CssColors
 
-  import CssColors.Color
+  import CssColors
 
   test "opacify" do
     assert hsl(0, 0, 0, 1) |> opacify(1) == hsl(0, 0, 0, 1)

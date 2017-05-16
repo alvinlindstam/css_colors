@@ -1,8 +1,6 @@
 defmodule CssColors.Parser do
   @moduledoc false
 
-  alias CssColors.{Color}
-
   pattern = "\\s*(-?\\d+)(\\%?)\\s*"
   @no_alpha_regex Regex.compile!("^#{pattern},#{pattern},#{pattern}\\)$")
   @alpha_regex Regex.compile!("^#{pattern},#{pattern},#{pattern},\\s*(\\d+\\.?\\d*)\\s*\\)$")
@@ -174,31 +172,31 @@ defmodule CssColors.Parser do
   }
 
   def parse("#" <> <<r :: binary-size(2), g :: binary-size(2), b :: binary-size(2)>>) do
-    Color.rgb parse_hex(r), parse_hex(g), parse_hex(b)
+    CssColors.rgb parse_hex(r), parse_hex(g), parse_hex(b)
   end
   def parse("#" <> <<r :: binary-size(1), g :: binary-size(1), b :: binary-size(1)>>) do
-    Color.rgb parse_hex(r <> r), parse_hex(g <> g), parse_hex(b <> b)
+    CssColors.rgb parse_hex(r <> r), parse_hex(g <> g), parse_hex(b <> b)
   end
 
   def parse("rgb(" <> rest) do
     {r, g, b, a} = parse_color(rest, false, true)
-    Color.rgb(r, g, b, a)
+    CssColors.rgb(r, g, b, a)
   end
 
   def parse("rgba(" <> rest) do
     {r, g, b, a} = parse_color(rest, true, true)
-    Color.rgb(r, g, b, a)
+    CssColors.rgb(r, g, b, a)
   end
 
   def parse("hsl(" <> rest) do
     {h, {s, :percent}, {l, :percent}, a} = parse_color(rest, false, false)
-    Color.hsl(h, s, l, a)
+    CssColors.hsl(h, s, l, a)
     parse_hsl(rest, false)
   end
 
   def parse("hsla(" <> rest) do
     {h, {s, :percent}, {l, :percent}, a} = parse_color(rest, true, false)
-    Color.hsl(h, s, l, a)
+    CssColors.hsl(h, s, l, a)
     parse_hsl(rest, true)
   end
 
@@ -211,7 +209,7 @@ defmodule CssColors.Parser do
 
   defp parse_hsl(rest, expect_alpha) do
     {h, {s, :percent}, {l, :percent}, a} = parse_color(rest, expect_alpha, false)
-    Color.hsl(h, s, l, a)
+    CssColors.hsl(h, s, l, a)
   end
 
   defp parse_color(binary, expect_alpha, allow_initial_percent) do

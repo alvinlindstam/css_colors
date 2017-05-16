@@ -3,7 +3,7 @@ defmodule CssParseTest do
   use ExUnit.Parameterized
   doctest CssColors
 
-  import CssColors.Color
+  import CssColors
   alias CssColors.{RGB, HSL}
 
   # todo: test invalid inputs
