@@ -5,7 +5,19 @@ defmodule CssColors.Mixfile do
     [app: :css_colors,
      version: "0.1.0",
      elixir: "~> 1.4",
-     deps: deps()]
+     deps: deps(),
+     source_url: "https://github.com/alvinlindstam/css_colors",
+     name: "CssColors",
+     package: package(),
+     description: description()]
+  end
+
+  defp package do
+    [maintainers: ["Alvin Lindstam"],
+     licenses: ["MIT"],
+     links: %{github: "https://github.com/alvinlindstam/css_colors"},
+     files: ~w(lib) ++
+            ~w(LICENSE mix.exs README.md)]
   end
 
   # Configuration for the OTP application
@@ -14,6 +26,12 @@ defmodule CssColors.Mixfile do
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
     [extra_applications: [:logger]]
+  end
+
+  defp description do
+    """
+    Library for parsing, writing and manipulation (css) colors.
+    """
   end
 
   # Dependencies can be Hex packages:
