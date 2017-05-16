@@ -146,7 +146,7 @@ defmodule CssColors do
 
   Takes a color and a number between 0 and 1, and returns a color with the opacity increased by that amount.
 
-  See also `transparentize/1` for the opposite effect.
+  See also `transparentize/2` for the opposite effect.
   """
   @spec opacify(color, number) :: hsl_color
   def opacify(color, amount) do
@@ -158,7 +158,7 @@ defmodule CssColors do
 
   Takes a color and a number between 0 and 1, and returns a color with the opacity decreased by that amount.
 
-  See also `opacify/1` for the opposite effect.
+  See also `opacify/2` for the opposite effect.
   """
   @spec transparentize(color, number) :: color
   def transparentize(color, amount) do
@@ -170,7 +170,7 @@ defmodule CssColors do
 
     Takes a color and a number between 0 and 1, and returns a color with the lightness increased by that amount.
 
-    See also `darken/1` for the opposite effect.
+    See also `darken/2` for the opposite effect.
   """
   @spec lighten(color, number) :: hsl_color
   def lighten(color, amount) do
@@ -182,7 +182,7 @@ defmodule CssColors do
 
     Takes a color and a number between 0 and 1, and returns a color with the lightness decreased by that amount.
 
-    See also `lighten/1` for the opposite effect.
+    See also `lighten/2` for the opposite effect.
   """
   @spec darken(color, number) :: hsl_color
   def darken(color, amount) do
@@ -194,7 +194,7 @@ defmodule CssColors do
 
     Takes a color and a number between 0 and 100, and returns a color with the saturation decreased by that value.
 
-    See also `desaturate/1` for the opposite effect.
+    See also `desaturate/2` for the opposite effect.
   """
   @spec saturate(color, number) :: hsl_color
   def saturate(color, amount) do
@@ -209,7 +209,7 @@ defmodule CssColors do
 
     Takes a color and a number between 0 and 100, and returns a color with the saturation increased by that value.
 
-    See also `saturate/1` for the opposite effect.
+    See also `saturate/2` for the opposite effect.
   """
   @spec desaturate(color, number) :: hsl_color
   def desaturate(color, amount) do
