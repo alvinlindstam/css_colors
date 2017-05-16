@@ -1,4 +1,6 @@
 defmodule CssColors.RGB do
+    @moduledoc false
+
     defstruct [
       red: 0.0, # 0-255
       green: 0.0, # 0-255

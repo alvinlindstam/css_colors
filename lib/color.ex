@@ -54,14 +54,45 @@ defmodule CssColors.Color do
     A representation of a color in any supported system.
   """
   @type color :: hsl_color | rgb_color
+
+  @doc """
+    Returns a color with a rgb representation.
+
+    Transforms the color to rgb if necessary.
+  """
+  @spec rgb(color) :: rgb_color
   def rgb(color=%RGB{}) do
     color
   end
-  def rgb(hsl=%HSL{}) do
-    {red, green, blue, alpha} = HSL.to_rgba(hsl)
+  def rgb(color=%HSL{}) do
+    {red, green, blue, alpha} = HSL.to_rgba(color)
     rgb(red, green, blue, alpha)
   end
 
+  @doc """
+    Creates a color from red, green and blue values.
+
+    Alpha is set to 1.0 (full opacity).
+  """
+  @spec rgb(number, number, number) :: rgb_color
+  defdelegate rgb(red, green, blue), to: RGB
+
+  @doc """
+    Creates a color from red, green, blue and alpha values.
+
+    Red, green and blue should given as numbers between 0 and 255.
+
+    Alpha should be a number (ratio) between 0 and 1.
+  """
+  @spec rgb(number, number, number, number) :: rgb_color
+  defdelegate rgb(red, green, blue, alpha), to: RGB
+
+  @doc """
+    Returns a color with a hsl representation.
+
+    Transforms the color to hsl if necessary.
+  """
+  @spec rgb(color) :: hsl_color
   def hsl(color=%HSL{}) do
     color
   end
@@ -69,6 +100,22 @@ defmodule CssColors.Color do
     {h, s, l} = RGB.to_hsl(rgb)
     hsl(h, s, l, alpha)
   end
+
+  @doc """
+    Creates a color from hue, saturation and lightness values.
+
+    Alpha is set to 1.0 (full opacity).
+  """
+  defdelegate hsl(hue, saturation, lightness), to: HSL
+
+  @doc """
+    Creates a color from hue, saturation, lightness and alpha values.
+
+    Hue should be a number in degrees.
+
+    Saturation, lightness and alpha should be a number (ratio) between 0 and 1.
+  """
+  defdelegate hsl(hue, saturation, lightness, alpha), to: HSL
 
   # Sass hsl functions
   @doc """
@@ -308,6 +355,15 @@ defmodule CssColors.Color do
       iex> rgb(150, 150, 150) |> adjust(0, :red, fn(old, new) -> old + (new - old) / 2 end)
       %CssColors.RGB{alpha: 1.0, blue: 150.0, green: 150.0, red: 75.0}
 
+  ## Sass equivalents
+
+  Developers familiar with sass can use this function as the equivalent of `adjust-color`, `scale-color` and
+  `change-color` by using the correct value function:
+
+  * `&+/2` for the eqivalent of `adjust-color`
+  * `&*/2` for the eqivalent of `scale-color`
+  * `fn _old, new -> new end` for the eqivalent of `change-color`
+
   """
   @spec adjust(color, number, atom,  (float, number -> number)) :: color
   def adjust(struct, amount, field, value_function) do
@@ -323,12 +379,6 @@ defmodule CssColors.Color do
   defp cast_color_by_attribute(color, :alpha), do: color
   defp cast_color_by_attribute(color, attribute) when attribute in @rgb_fields, do: rgb(color)
   defp cast_color_by_attribute(color, attribute) when attribute in @hsl_fields, do: hsl(color)
-
-  defdelegate rgb(red, green, blue), to: RGB
-  defdelegate rgb(red, green, blue, alpha), to: RGB
-
-  defdelegate hsl(hue, saturation, lightness), to: HSL
-  defdelegate hsl(hue, saturation, lightness, alpha), to: HSL
 
   defdelegate parse(string), to: CssColors.Parser
 end

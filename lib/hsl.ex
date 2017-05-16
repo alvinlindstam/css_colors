@@ -1,4 +1,6 @@
 defmodule CssColors.HSL do
+  @moduledoc false
+
   defstruct [
     hue:        0.0, # 0-360 (degrees)
     saturation: 0.0, # 0-1 (percent)
