@@ -55,6 +55,11 @@ defmodule ColorManipulationTest do
     assert hsl(300, 0.5, 0) |> complement() == hsl(120, 0.5, 0)
   end
 
+  def test_invert do
+    assert parse("#112233") == invert(parse("#edc"))
+    assert parse("rgba(245, 235, 225, 0.5)") == invert(parse("rgba(10, 20, 30, 0.5))"))
+  end
+
   test "adjust" do
     assert hsl(0, 0.5, 0) |> complement() == hsl(180, 0.5, 0)
     assert hsl(30, 0.5, 0) |> complement() == hsl(210, 0.5, 0)

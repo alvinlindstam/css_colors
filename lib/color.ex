@@ -76,6 +76,11 @@ defmodule CssColors.Color do
 
   # sass rgb functions
 
+  def invert(color) do
+    rgb_color = rgb(color)
+    rgb(255 - rgb_color.red, 255 - rgb_color.green, 255 - rgb_color.blue, color.alpha)
+  end
+
   def mix(color1, color2, weight\\0.5) do
     # Algorithm taken from the sass function.
 
