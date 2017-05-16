@@ -29,7 +29,8 @@ defmodule CssColors.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:ex_parameterized, "~> 1.2.0", only: :test}
+      {:ex_parameterized, "~> 1.2.0", only: :test},
+      {:ex_doc, "~> 0.14", only: :dev, runtime: false}
     ]
   end
 end
