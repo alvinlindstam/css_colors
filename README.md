@@ -1,11 +1,10 @@
 # CssColors
 
-**TODO: Add description**
+Library for parsing, writing and manipulation (css) colors.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `css_colors` to your list of dependencies in `mix.exs`:
+Add  [css_colors](https://hex.pm/packages/css_colors) to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -13,7 +12,16 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/css_colors](https://hexdocs.pm/css_colors).
+## Documentation
 
+See the [full documentation on HexDocs](https://hexdocs.pm/css_colors/CssColors.html).
+
+## Examples
+
+```elixir
+iex> "#123456" |> parse |> lighten(0.2) |> to_string
+"hsl(210, 65%, 40%)"
+
+iex> to_string mix(parse("#f00"), parse("#00f"), 0.25)
+"#4000BF"
+```
