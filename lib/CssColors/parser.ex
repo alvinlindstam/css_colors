@@ -184,13 +184,13 @@ defmodule CssColors.Parser do
   end
 
   def parse("rgb(" <> rest) do
-    {r, g, b, a} = parse_color(rest, false, true)
-    {:ok, CssColors.rgb(r, g, b, a)}
+    with {r, g, b, a} <- parse_color(rest, false, true),
+      do: {:ok, CssColors.rgb(r, g, b, a)}
   end
 
   def parse("rgba(" <> rest) do
-    {r, g, b, a} = parse_color(rest, true, true)
-    {:ok, CssColors.rgb(r, g, b, a)}
+    with {r, g, b, a} <- parse_color(rest, true, true),
+      do: {:ok, CssColors.rgb(r, g, b, a)}
   end
 
   def parse("hsl(" <> rest) do
@@ -203,14 +203,14 @@ defmodule CssColors.Parser do
 
   def parse(name) when is_binary(name) do
     case Map.get(@named_colors, name) do
-      nil -> raise "No matching color"
+      nil -> {:error, :no_match}
       rgb_str -> parse(rgb_str)
     end
   end
 
   defp parse_hsl(rest, expect_alpha) do
-    {h, {s, :percent}, {l, :percent}, a} = parse_color(rest, expect_alpha, false)
-    {:ok, CssColors.hsl(h, s, l, a)}
+    with {h, {s, :percent}, {l, :percent}, a} <- parse_color(rest, expect_alpha, false),
+      do: {:ok, CssColors.hsl(h, s, l, a)}
   end
 
   defp parse_color(binary, expect_alpha, allow_initial_percent) do
@@ -222,6 +222,8 @@ defmodule CssColors.Parser do
         {from_percent(a), from_percent(b), from_percent(c), parse_alpha(alpha, expect_alpha)}
       {false, [a, "", b, "%", c, "%" | alpha]} ->
         {parse_int(a), from_percent(b), from_percent(c), parse_alpha(alpha, expect_alpha)}
+      _ ->
+        {:error, :no_match}
     end
   end
 
