@@ -115,7 +115,7 @@ defmodule CssColors do
 
     Transforms the color to hsl if necessary.
   """
-  @spec rgb(color) :: hsl_color
+  @spec hsl(color) :: hsl_color
   def hsl(color=%HSL{}) do
     color
   end
