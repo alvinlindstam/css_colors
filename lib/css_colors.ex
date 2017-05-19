@@ -15,7 +15,7 @@ defmodule CssColors do
   of the color using it's current color model. You can transform it to the desired color model before stringifying
   it if desired.
 
-      iex> color = parse("#fe3")
+      iex> color = parse!("#fe3")
       %CssColors.RGB{alpha: 1.0, blue: 51.0, green: 238.0, red: 255.0}
       iex> to_string color
       "#FFEE33"
@@ -30,7 +30,7 @@ defmodule CssColors do
 
   ## Examples:
 
-      iex> color = parse("#123456")
+      iex> color = parse!("#123456")
       %CssColors.RGB{alpha: 1.0, blue: 86.0, green: 52.0, red: 18.0}
       iex> get_blue(color)
       86.0
@@ -321,11 +321,11 @@ defmodule CssColors do
 
     ## Examples:
 
-        iex> to_string mix(parse("#00f"), parse("#f00"))
+        iex> to_string mix(parse!("#00f"), parse!("#f00"))
         "#800080"
-        iex> to_string mix(parse("#00f"), parse("#f00"), 0.25)
+        iex> to_string mix(parse!("#00f"), parse!("#f00"), 0.25)
         "#BF0040"
-        iex> to_string mix(rgb(255, 0, 0, 0.5), parse("#00f"))
+        iex> to_string mix(rgb(255, 0, 0, 0.5), parse!("#00f"))
         "rgba(64, 0, 191, 0.75)"
   """
   # todo: this is different from the sass examples since we round up. What's the right way?
@@ -404,4 +404,5 @@ defmodule CssColors do
   defp cast_color_by_attribute(color, attribute) when attribute in @hsl_fields, do: hsl(color)
 
   defdelegate parse(string), to: CssColors.Parser
+  defdelegate parse!(string), to: CssColors.Parser
 end

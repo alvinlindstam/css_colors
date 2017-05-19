@@ -171,32 +171,33 @@ defmodule CssColors.Parser do
  	 	"yellowgreen"	=> "#9ACD32",	# 154,205,50
   }
 
+  def parse!(input) do
+    {:ok, color} = parse(input)
+    color
+  end
+
   def parse("#" <> <<r :: binary-size(2), g :: binary-size(2), b :: binary-size(2)>>) do
-    CssColors.rgb parse_hex(r), parse_hex(g), parse_hex(b)
+    {:ok, CssColors.rgb(parse_hex(r), parse_hex(g), parse_hex(b))}
   end
   def parse("#" <> <<r :: binary-size(1), g :: binary-size(1), b :: binary-size(1)>>) do
-    CssColors.rgb parse_hex(r <> r), parse_hex(g <> g), parse_hex(b <> b)
+    {:ok, CssColors.rgb(parse_hex(r <> r), parse_hex(g <> g), parse_hex(b <> b))}
   end
 
   def parse("rgb(" <> rest) do
     {r, g, b, a} = parse_color(rest, false, true)
-    CssColors.rgb(r, g, b, a)
+    {:ok, CssColors.rgb(r, g, b, a)}
   end
 
   def parse("rgba(" <> rest) do
     {r, g, b, a} = parse_color(rest, true, true)
-    CssColors.rgb(r, g, b, a)
+    {:ok, CssColors.rgb(r, g, b, a)}
   end
 
   def parse("hsl(" <> rest) do
-    {h, {s, :percent}, {l, :percent}, a} = parse_color(rest, false, false)
-    CssColors.hsl(h, s, l, a)
     parse_hsl(rest, false)
   end
 
   def parse("hsla(" <> rest) do
-    {h, {s, :percent}, {l, :percent}, a} = parse_color(rest, true, false)
-    CssColors.hsl(h, s, l, a)
     parse_hsl(rest, true)
   end
 
@@ -209,7 +210,7 @@ defmodule CssColors.Parser do
 
   defp parse_hsl(rest, expect_alpha) do
     {h, {s, :percent}, {l, :percent}, a} = parse_color(rest, expect_alpha, false)
-    CssColors.hsl(h, s, l, a)
+    {:ok, CssColors.hsl(h, s, l, a)}
   end
 
   defp parse_color(binary, expect_alpha, allow_initial_percent) do
