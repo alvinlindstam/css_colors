@@ -8,7 +8,7 @@ defmodule CssParseTest do
   # todo: test invalid inputs
 
   test_with_params "hsl", fn(string, struct) ->
-    assert parse(string) == struct
+    assert parse!(string) == struct
     #assert to_string(struct) == string
   end do
     [
@@ -18,11 +18,11 @@ defmodule CssParseTest do
       {"#a0A00A", %RGB{red: 160.0, green: 160.0, blue: 10.0, alpha: 1.0}},
       {"#ffFFEe", %RGB{red: 255.0, green: 255.0, blue: 238.0, alpha: 1.0}},
 
-      {"#000", parse "#000000"},
-      {"#111", parse "#111111"},
-      {"#aaa", parse "#aaaaaa"},
-      {"#aA3", parse "#aaaa33"},
-      {"#fFE", parse "#ffffee"},
+      {"#000", parse! "#000000"},
+      {"#111", parse! "#111111"},
+      {"#aaa", parse! "#aaaaaa"},
+      {"#aA3", parse! "#aaaa33"},
+      {"#fFE", parse! "#ffffee"},
 
       {"rgb(0, 0, 0)", %RGB{red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0}},
       {"rgb(255, 123, 0)", %RGB{red: 255.0, green: 123.0, blue: 0.0, alpha: 1.0}},
@@ -49,8 +49,8 @@ defmodule CssParseTest do
   end
 
   test_with_params "sass data", fn(hsl_str, rgb_str) ->
-    hsl = parse(hsl_str)
-    rgb = parse(rgb_str)
+    hsl = parse!(hsl_str)
+    rgb = parse!(rgb_str)
     # Compare strings in order to ignore fractions
     assert to_string(rgb) == hsl |> rgb |> to_string
     expected_hsl_string = case hsl.lightness do
@@ -224,4 +224,16 @@ defmodule CssParseTest do
     ]
   end
 
+  test_with_params "parse without !", fn(string, color) ->
+    {:ok, generated_color} = parse(string)
+    assert to_string(generated_color) == to_string(color)
+  end do [
+    {"#ffFFEe", %RGB{red: 255.0, green: 255.0, blue: 238.0, alpha: 1.0}},
+    {"#ffE", parse! "#ffffee"},
+    {"rgb(255, 123, 0)", %RGB{red: 255.0, green: 123.0, blue: 0.0, alpha: 1.0}},
+    {"rgb(0%, 100%, 50%)", %RGB{red: 0.0, green: 255.0, blue: 127.5, alpha: 1.0}},
+    {"rgba(12, 99, 200, 0.5)", %RGB{red: 12.0, green: 99.0, blue: 200.0, alpha: 0.5}},
+    {"hsl(0,0%,75%)", %HSL{hue: 0, saturation: 0.0, lightness: 0.75}},
+    {"hsla(240,100%,50%,0)", %HSL{hue: 240, saturation: 1.0, lightness: 0.5, alpha: 0.0}},
+  ] end
 end

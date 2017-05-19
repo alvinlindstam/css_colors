@@ -171,45 +171,46 @@ defmodule CssColors.Parser do
  	 	"yellowgreen"	=> "#9ACD32",	# 154,205,50
   }
 
+  def parse!(input) do
+    {:ok, color} = parse(input)
+    color
+  end
+
   def parse("#" <> <<r :: binary-size(2), g :: binary-size(2), b :: binary-size(2)>>) do
-    CssColors.rgb parse_hex(r), parse_hex(g), parse_hex(b)
+    {:ok, CssColors.rgb(parse_hex(r), parse_hex(g), parse_hex(b))}
   end
   def parse("#" <> <<r :: binary-size(1), g :: binary-size(1), b :: binary-size(1)>>) do
-    CssColors.rgb parse_hex(r <> r), parse_hex(g <> g), parse_hex(b <> b)
+    {:ok, CssColors.rgb(parse_hex(r <> r), parse_hex(g <> g), parse_hex(b <> b))}
   end
 
   def parse("rgb(" <> rest) do
-    {r, g, b, a} = parse_color(rest, false, true)
-    CssColors.rgb(r, g, b, a)
+    with {r, g, b, a} <- parse_color(rest, false, true),
+      do: {:ok, CssColors.rgb(r, g, b, a)}
   end
 
   def parse("rgba(" <> rest) do
-    {r, g, b, a} = parse_color(rest, true, true)
-    CssColors.rgb(r, g, b, a)
+    with {r, g, b, a} <- parse_color(rest, true, true),
+      do: {:ok, CssColors.rgb(r, g, b, a)}
   end
 
   def parse("hsl(" <> rest) do
-    {h, {s, :percent}, {l, :percent}, a} = parse_color(rest, false, false)
-    CssColors.hsl(h, s, l, a)
     parse_hsl(rest, false)
   end
 
   def parse("hsla(" <> rest) do
-    {h, {s, :percent}, {l, :percent}, a} = parse_color(rest, true, false)
-    CssColors.hsl(h, s, l, a)
     parse_hsl(rest, true)
   end
 
   def parse(name) when is_binary(name) do
     case Map.get(@named_colors, name) do
-      nil -> raise "No matching color"
+      nil -> {:error, :no_match}
       rgb_str -> parse(rgb_str)
     end
   end
 
   defp parse_hsl(rest, expect_alpha) do
-    {h, {s, :percent}, {l, :percent}, a} = parse_color(rest, expect_alpha, false)
-    CssColors.hsl(h, s, l, a)
+    with {h, {s, :percent}, {l, :percent}, a} <- parse_color(rest, expect_alpha, false),
+      do: {:ok, CssColors.hsl(h, s, l, a)}
   end
 
   defp parse_color(binary, expect_alpha, allow_initial_percent) do
@@ -221,6 +222,8 @@ defmodule CssColors.Parser do
         {from_percent(a), from_percent(b), from_percent(c), parse_alpha(alpha, expect_alpha)}
       {false, [a, "", b, "%", c, "%" | alpha]} ->
         {parse_int(a), from_percent(b), from_percent(c), parse_alpha(alpha, expect_alpha)}
+      _ ->
+        {:error, :no_match}
     end
   end
 
