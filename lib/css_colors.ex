@@ -403,6 +403,19 @@ defmodule CssColors do
   defp cast_color_by_attribute(color, attribute) when attribute in @rgb_fields, do: rgb(color)
   defp cast_color_by_attribute(color, attribute) when attribute in @hsl_fields, do: hsl(color)
 
+  @doc """
+    Parses a string as a CSS color value.
+
+    The string should be a valid CSS3 color. Returns `{:ok, color}` on successful parse, or `{:error, reason}` otherwise
+  """
+  @spec parse(String.t) :: {:ok, color} | {:error, atom}
   defdelegate parse(string), to: CssColors.Parser
+
+  @doc """
+    Parses a string as a CSS color value.
+
+    Similar to `parse/1` but throws on invalid input. Returns the color if succesful.
+  """
+  @spec parse!(String.t) :: color
   defdelegate parse!(string), to: CssColors.Parser
 end
