@@ -46,7 +46,8 @@ defmodule CssColors.Mixfile do
   defp deps do
     [
       {:ex_parameterized, "~> 1.2.0", only: :test},
-      {:ex_doc, "~> 0.14", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.14", only: :dev, runtime: false},
+      {:ecto, ">= 2.0.0", optional: :true}
     ]
   end
 end
