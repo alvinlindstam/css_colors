@@ -30,6 +30,7 @@ defmodule EctoColorsTest do
   test "dump" do
     assert {:ok, to_string(@existing_rgb_color)} == CssColors.Ecto.Color.dump(@existing_rgb_color)
     assert {:ok, to_string(@existing_hsl_color)} == CssColors.Ecto.Color.dump(@existing_hsl_color)
+    assert {:ok, "rgba(255, 255, 255, 0.1111)"} == CssColors.Ecto.Color.dump(CssColors.rgb(255, 255, 255, 0.1111111111))
     :error = CssColors.Ecto.Color.dump(%{})
   end
 
