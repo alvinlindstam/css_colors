@@ -8,7 +8,7 @@ Add  [css_colors](https://hex.pm/packages/css_colors) to your list of dependenci
 
 ```elixir
 def deps do
-  [{:css_colors, "~> 0.1.0"}]
+  [{:css_colors, "~> 0.2.0"}]
 end
 ```
 
