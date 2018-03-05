@@ -3,7 +3,7 @@ defmodule CssColors.Mixfile do
 
   def project do
     [app: :css_colors,
-     version: "0.2.0",
+     version: "0.2.1",
      elixir: "~> 1.4",
      deps: deps(),
      source_url: "https://github.com/alvinlindstam/css_colors",

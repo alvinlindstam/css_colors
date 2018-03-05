@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Version 0.2.1
+-------------
+
+Bug fixes:
+
+* Correctly output RGB colors with values between 0x0A and 0x0F.
+  They were missing the leading zero. Thanks to @andrebnf.
+
 Version 0.2.0
 -------------
 
