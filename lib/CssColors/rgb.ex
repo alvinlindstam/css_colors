@@ -51,7 +51,7 @@ defmodule CssColors.RGB do
 
     defp to_hex(value) when is_float(value), do:
       to_hex(round(value))
-    defp to_hex(value) when value < 10, do:
+    defp to_hex(value) when value < 16, do:
       "0" <> Integer.to_string(value, 16)
     defp to_hex(value) when is_integer(value), do:
       Integer.to_string(value, 16)
