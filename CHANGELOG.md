@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Version 0.2.2
+-------------
+
+Fixes:
+
+* Remove compiler warnings for unused variables. Thanks to @rodrigues.
+
+  
 Version 0.2.1
 -------------
 
