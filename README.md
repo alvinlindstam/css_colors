@@ -2,6 +2,8 @@
 
 Library for parsing, writing and manipulation (css) colors.
 
+Heavily inspired by [Sass color functions](https://sass-lang.com/documentation/Sass/Script/Functions.html).
+
 ## Installation
 
 Add  [css_colors](https://hex.pm/packages/css_colors) to your list of dependencies in `mix.exs`:
