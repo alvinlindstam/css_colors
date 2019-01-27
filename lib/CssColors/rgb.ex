@@ -65,7 +65,7 @@ defmodule CssColors.RGB do
         max_color = Enum.max colors
         min_color = Enum.min colors
 
-        h = s = l = (max_color + min_color) / 2;
+        l = (max_color + min_color) / 2
 
         if max_color == min_color do
           {0.0, 0.0, l}
