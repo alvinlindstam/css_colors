@@ -3,7 +3,7 @@ defmodule CssColors.Ecto.Color do
   Custom Ecto type for representing CSS colors.
 
   The colors are stored as CSS colors strings in the data store. They may be any valid CSS colors. Note that you can
-  not expect the stored colors to be any supporte color scheme.
+  not expect the stored colors to be in any specific format (rgb/hsl etc), they may be in any supported color scheme.
 
   If you define a max length on the data store field, make sure any possible color can fit by setting the length to at
   least 30 characters.
