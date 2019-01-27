@@ -57,21 +57,21 @@ defmodule CssColors do
     A representation of a color in hue, saturation, lightness and alpha.
   """
   @type hsl_color :: %HSL{
-    hue: :float,
-    saturation: :float,
-    lightness: :float,
-    alpha: :float,
-  }
+          hue: :float,
+          saturation: :float,
+          lightness: :float,
+          alpha: :float
+        }
 
   @typedoc """
     A representation of a color in red, green, blue and alpha.
   """
   @type rgb_color :: %RGB{
-      red: :float,
-      green: :float,
-      blue: :float,
-      alpha: :float
-    }
+          red: :float,
+          green: :float,
+          blue: :float,
+          alpha: :float
+        }
 
   @typedoc """
     A representation of a color in any supported system.
@@ -84,10 +84,11 @@ defmodule CssColors do
     Transforms the color to rgb if necessary.
   """
   @spec rgb(color) :: rgb_color
-  def rgb(color=%RGB{}) do
+  def rgb(color = %RGB{}) do
     color
   end
-  def rgb(color=%HSL{}) do
+
+  def rgb(color = %HSL{}) do
     {red, green, blue, alpha} = HSL.to_rgba(color)
     rgb(red, green, blue, alpha)
   end
@@ -116,10 +117,11 @@ defmodule CssColors do
     Transforms the color to hsl if necessary.
   """
   @spec hsl(color) :: hsl_color
-  def hsl(color=%HSL{}) do
+  def hsl(color = %HSL{}) do
     color
   end
-  def hsl(rgb=%RGB{alpha: alpha}) do
+
+  def hsl(rgb = %RGB{alpha: alpha}) do
     {h, s, l} = RGB.to_hsl(rgb)
     hsl(h, s, l, alpha)
   end
@@ -200,7 +202,7 @@ defmodule CssColors do
   def saturate(color, amount) do
     # Support the filter effects definition of saturate.
     # https://dvcs.w3.org/hg/FXTF/raw-file/tip/filters/index.html
-    #return identifier("saturate(#{color})") if amount.nil?
+    # return identifier("saturate(#{color})") if amount.nil?
     adjust(color, amount, :saturation, &+/2)
   end
 
@@ -237,7 +239,7 @@ defmodule CssColors do
     # if color.is_a?(Sass::Script::Value::Number)
     #   return identifier("grayscale(#{color})")
     # end
-    desaturate color, 1
+    desaturate(color, 1)
   end
 
   @doc """
@@ -247,7 +249,7 @@ defmodule CssColors do
   """
   @spec complement(color) :: hsl_color
   def complement(color) do
-    adjust_hue color, 180
+    adjust_hue(color, 180)
   end
 
   # Getter functions
@@ -256,31 +258,37 @@ defmodule CssColors do
   """
   @spec get_red(color) :: float
   def get_red(color), do: get_attribute(color, :red)
+
   @doc """
     Gets the `:green` property of the color.
   """
   @spec get_green(color) :: float
   def get_green(color), do: get_attribute(color, :green)
+
   @doc """
     Gets the `:blue` property of the color.
   """
   @spec get_blue(color) :: float
   def get_blue(color), do: get_attribute(color, :blue)
+
   @doc """
     Gets the `:hue` property of the color.
   """
   @spec get_hue(color) :: float
   def get_hue(color), do: get_attribute(color, :hue)
+
   @doc """
     Gets the `:saturation` property of the color.
   """
   @spec get_saturation(color) :: float
   def get_saturation(color), do: get_attribute(color, :saturation)
+
   @doc """
     Gets the `:lightness` property of the color.
   """
   @spec get_lightness(color) :: float
   def get_lightness(color), do: get_attribute(color, :lightness)
+
   @doc """
     Gets the `:alpha` property of the color.
   """
@@ -330,21 +338,21 @@ defmodule CssColors do
   """
   # todo: this is different from the sass examples since we round up. What's the right way?
   @spec mix(color, color, number) :: rgb_color
-  def mix(color1, color2, weight\\0.5) do
+  def mix(color1, color2, weight \\ 0.5) do
     # Algorithm taken from the sass function.
 
     p = weight
     w = p * 2 - 1
     a = color1.alpha - color2.alpha
 
-    w1 = ((if (w * a == -1), do: w, else: (w + a) / (1 + w * a)) + 1) / 2.0
+    w1 = (if(w * a == -1, do: w, else: (w + a) / (1 + w * a)) + 1) / 2.0
     w2 = 1 - w1
 
     [r, g, b] =
       [:red, :green, :blue]
-      |> Enum.map(fn(key)->
-          get_attribute(color1, key) * w1 + get_attribute(color2, key) * w2
-        end)
+      |> Enum.map(fn key ->
+        get_attribute(color1, key) * w1 + get_attribute(color2, key) * w2
+      end)
 
     alpha = get_alpha(color1) * p + get_alpha(color2) * (1 - p)
     rgb(r, g, b, alpha)
@@ -388,14 +396,16 @@ defmodule CssColors do
   * `fn _old, new -> new end` for the eqivalent of `change-color`
 
   """
-  @spec adjust(color, number, atom,  (float, number -> number)) :: color
+  @spec adjust(color, number, atom, (float, number -> number)) :: color
   def adjust(struct, amount, field, value_function) do
     struct = cast_color_by_attribute(struct, field)
+
     new_value =
       struct
       |> Map.fetch!(field)
       |> value_function.(amount)
       |> struct.__struct__.cast(field)
+
     Map.put(struct, field, new_value)
   end
 
@@ -408,7 +418,7 @@ defmodule CssColors do
 
     The string should be a valid CSS3 color. Returns `{:ok, color}` on successful parse, or `{:error, reason}` otherwise
   """
-  @spec parse(String.t) :: {:ok, color} | {:error, atom}
+  @spec parse(String.t()) :: {:ok, color} | {:error, atom}
   defdelegate parse(string), to: CssColors.Parser
 
   @doc """
@@ -416,6 +426,6 @@ defmodule CssColors do
 
     Similar to `parse/1` but throws on invalid input. Returns the color if succesful.
   """
-  @spec parse!(String.t) :: color
+  @spec parse!(String.t()) :: color
   defdelegate parse!(string), to: CssColors.Parser
 end

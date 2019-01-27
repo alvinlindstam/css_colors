@@ -8,7 +8,7 @@ defmodule EctoColorsTest do
     use Ecto.Schema
 
     schema "users" do
-      field :color, CssColors.Ecto.Color
+      field(:color, CssColors.Ecto.Color)
     end
   end
 
@@ -30,30 +30,37 @@ defmodule EctoColorsTest do
   test "dump" do
     assert {:ok, to_string(@existing_rgb_color)} == CssColors.Ecto.Color.dump(@existing_rgb_color)
     assert {:ok, to_string(@existing_hsl_color)} == CssColors.Ecto.Color.dump(@existing_hsl_color)
-    assert {:ok, "rgba(255, 255, 255, 0.1111)"} == CssColors.Ecto.Color.dump(CssColors.rgb(255, 255, 255, 0.1111111111))
+
+    assert {:ok, "rgba(255, 255, 255, 0.1111)"} ==
+             CssColors.Ecto.Color.dump(CssColors.rgb(255, 255, 255, 0.1111111111))
+
     :error = CssColors.Ecto.Color.dump(%{})
   end
 
   test "valid changeset" do
-    changeset = %TestSchema{}
-    |> Ecto.Changeset.cast(%{"color": "#abc"}, [:color])
+    changeset =
+      %TestSchema{}
+      |> Ecto.Changeset.cast(%{color: "#abc"}, [:color])
 
     assert changeset.valid?
     %Ecto.Changeset{changes: %{color: %CssColors.RGB{}}} = changeset
   end
 
   test "invalid changeset" do
-    changeset = %TestSchema{}
-    |> Ecto.Changeset.cast(%{"color": "#"}, [:color])
+    changeset =
+      %TestSchema{}
+      |> Ecto.Changeset.cast(%{color: "#"}, [:color])
 
     refute changeset.valid?
     # todo: improve error handling? Add validator function?
-    assert [color: {"is invalid", [type: CssColors.Ecto.Color, validation: :cast]}] == changeset.errors
+    assert [color: {"is invalid", [type: CssColors.Ecto.Color, validation: :cast]}] ==
+             changeset.errors
   end
 
   test "empty changeset" do
-    changeset = %TestSchema{}
-    |> Ecto.Changeset.cast(%{"color": ""}, [:color])
+    changeset =
+      %TestSchema{}
+      |> Ecto.Changeset.cast(%{color: ""}, [:color])
 
     assert changeset.valid?
     assert %{} == changeset.changes

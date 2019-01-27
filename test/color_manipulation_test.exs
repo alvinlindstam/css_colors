@@ -14,7 +14,7 @@ defmodule ColorManipulationTest do
   test "tranparentize" do
     assert hsl(0, 0, 0, 1) |> transparentize(1) == hsl(0, 0, 0, 0)
     assert hsl(0, 0, 0, 0) |> transparentize(1) == hsl(0, 0, 0, 0)
-    assert hsl(0, 0, 0, 0.4) |> transparentize(0.1) == hsl(0, 0, 0, 0.4-0.1)
+    assert hsl(0, 0, 0, 0.4) |> transparentize(0.1) == hsl(0, 0, 0, 0.4 - 0.1)
     assert hsl(0, 0, 0, 0.8) |> transparentize(0.01) == hsl(0, 0, 0, 0.79)
   end
 
@@ -28,7 +28,7 @@ defmodule ColorManipulationTest do
   test "darken" do
     assert hsl(0, 0, 1) |> darken(1) == hsl(0, 0, 0)
     assert hsl(0, 0, 0) |> darken(1) == hsl(0, 0, 0)
-    assert hsl(0, 0, 0.4) |> darken(0.1) == hsl(0, 0, 0.4-0.1)
+    assert hsl(0, 0, 0.4) |> darken(0.1) == hsl(0, 0, 0.4 - 0.1)
     assert hsl(0, 0, 0.8) |> darken(0.01) == hsl(0, 0, 0.79)
   end
 
@@ -71,16 +71,29 @@ defmodule ColorManipulationTest do
     assert parse!("purple") |> to_string == mix(parse!("#f00"), parse!("#00f")) |> to_string
     assert parse!("gray") |> to_string == mix(parse!("#f00"), parse!("#0ff")) |> to_string
     assert parse!("#809155") |> to_string == mix(parse!("#f70"), parse!("#0aa")) |> to_string
-    assert parse!("#4000bf") |> to_string == mix(parse!("#f00"), rgb(0, 0, 255), 0.25)  |> to_string
-    assert parse!("rgba(64, 0, 191, 0.75)") |> to_string == mix(rgb(255, 0, 0, 0.5), parse!("#00f")) |> to_string
+
+    assert parse!("#4000bf") |> to_string ==
+             mix(parse!("#f00"), rgb(0, 0, 255), 0.25) |> to_string
+
+    assert parse!("rgba(64, 0, 191, 0.75)") |> to_string ==
+             mix(rgb(255, 0, 0, 0.5), parse!("#00f")) |> to_string
 
     assert parse!("red") == mix(parse!("#f00"), parse!("#00f"), 1)
     assert parse!("blue") == mix(parse!("#f00"), parse!("#00f"), 0)
-    assert parse!("rgba(255, 0, 0, 0.5)") == mix(parse!("#f00"), transparentize(parse!("#00f"), 1))
-    assert parse!("rgba(0, 0, 255, 0.5)") == mix(transparentize(parse!("#f00"), 1), parse!("#00f"))
+
+    assert parse!("rgba(255, 0, 0, 0.5)") ==
+             mix(parse!("#f00"), transparentize(parse!("#00f"), 1))
+
+    assert parse!("rgba(0, 0, 255, 0.5)") ==
+             mix(transparentize(parse!("#f00"), 1), parse!("#00f"))
+
     assert parse!("red") == mix(parse!("#f00"), transparentize(parse!("#00f"), 1), 1)
     assert parse!("blue") == mix(transparentize(parse!("#f00"), 1), parse!("#00f"), 0)
-    assert parse!("rgba(0, 0, 255, 0)") == mix(parse!("#f00"), transparentize(parse!("#00f"), 1), 0)
-    assert parse!("rgba(255, 0, 0, 0)") == mix(transparentize(parse!("#f00"), 1), parse!("#00f"), 1)
+
+    assert parse!("rgba(0, 0, 255, 0)") ==
+             mix(parse!("#f00"), transparentize(parse!("#00f"), 1), 0)
+
+    assert parse!("rgba(255, 0, 0, 0)") ==
+             mix(transparentize(parse!("#f00"), 1), parse!("#00f"), 1)
   end
 end

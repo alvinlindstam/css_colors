@@ -21,7 +21,6 @@ defmodule CssInvalidParseTest do
     assert {:error, _} = parse("rgb(0%, 0, 0%)")
 
     # todo: should we ignore leading and trailing whitespace?
-    #assert {:ok, _} = parse("hsla(0, 10%, 10%, 0) ")
-
+    # assert {:ok, _} = parse("hsla(0, 10%, 10%, 0) ")
   end
 end
