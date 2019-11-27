@@ -37,6 +37,14 @@ defmodule EctoColorsTest do
     :error = CssColors.Ecto.Color.dump(%{})
   end
 
+  test "equal?" do
+    assert CssColors.Ecto.Color.equal?(@existing_hsl_color, @existing_hsl_color)
+    assert CssColors.Ecto.Color.equal?(@existing_rgb_color, @existing_rgb_color)
+    refute CssColors.Ecto.Color.equal?(@existing_rgb_color, @existing_hsl_color)
+    refute CssColors.Ecto.Color.equal?(@existing_rgb_color, CssColors.rgb(44, 44, 44))
+    assert CssColors.Ecto.Color.equal?(@existing_rgb_color, CssColors.rgb(10, 50, 200))
+  end
+
   test "valid changeset" do
     changeset =
       %TestSchema{}
