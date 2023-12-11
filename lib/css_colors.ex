@@ -57,20 +57,20 @@ defmodule CssColors do
     A representation of a color in hue, saturation, lightness and alpha.
   """
   @type hsl_color :: %HSL{
-          hue: :float,
-          saturation: :float,
-          lightness: :float,
-          alpha: :float
+          hue: float(),
+          saturation: float(),
+          lightness: float(),
+          alpha: float()
         }
 
   @typedoc """
     A representation of a color in red, green, blue and alpha.
   """
   @type rgb_color :: %RGB{
-          red: :float,
-          green: :float,
-          blue: :float,
-          alpha: :float
+          red: float(),
+          green: float(),
+          blue: float(),
+          alpha: float()
         }
 
   @typedoc """
